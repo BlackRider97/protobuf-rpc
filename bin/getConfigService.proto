@@ -1,0 +1,11 @@
+package protobuftest;
+import "testData.proto";
+option java_package = "rpcdata";
+option java_outer_classname = "MyProtoService";
+option java_generic_services = true; //if you don't do this, protoc wont generate the stubs you need for rpc
+
+
+service GetConfigService //in a generated file, look for this guy as an abstract class, you gonna extend it.
+{
+    rpc getConfig(ConfigRequest) returns (ConfigReply);
+}

@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<project name="mqtt" default="all">
+
+    <property name="vm.size" value="4096m"/>
+    <property name="log4j.configuration" value="log4j.xml"/>
+    <property name="src.dir" value="src"/>
+    <property name="lib.dir" value="./lib"/>
+    <property name="version" value="1.0"/>
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="./build"/>
+    <property name="deploy.dir" value="./deploy/rpc"/>
+
+    <target name="init">
+        <mkdir dir="${build.dir}/classes"/>
+        <mkdir dir="${deploy.dir}/lib"/>
+    </target>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <target name="compile" depends="init">
+        <javac includeantruntime="false" debug="on" srcdir="${src.dir}" destdir="${build.dir}/classes">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </javac>
+
+    </target>
+
+    <target name="manfestcp">
+        <manifestclasspath property="manifest.classpath" jarfile="myjar.jar">
+            <classpath refid="classpath"/>
+        </manifestclasspath>
+        <echo message="Manifest Classpath: ${manifest.classpath}"/>
+    </target>
+
+    <target name="compress" depends="compile,manfestcp">
+        <!--copy file="config/log4j.xml" todir="${build.dir}/classes/"/ -->
+        <jar destfile="${deploy.dir}/${ant.project.name}.jar" basedir="${build.dir}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="com.bsb.hike.http.MQHttpServer"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+            </manifest>
+            <!--
+            <manifest>
+                <attribute name="Built-By" value="${user.name}" />
+                <attribute name="Main-Class" value="my.path.to.the.main.Application" />
+                <section name="common">
+                    <attribute name="Specification-Title" value="${component.name}" />
+                    <attribute name="Specification-Version" value="${component.version}" />
+                    <attribute name="Specification-Vendor" value="${component.vendor}" />
+                    <attribute name="Implementation-Title" value="${component.name}" />
+                    <attribute name="Implementation-Version" value="${component.version} ${TODAY}" />
+                    <attribute name="Implementation-Vendor" value="${component.vendor}" />
+                </section>
+
+                <attribute name="Class-Path" value="${libs.project}" />
+            </manifest>
+            -->
+
+        </jar>
+    </target>
+    <target name="deploy" depends="compress">
+        <copy file="build.xml" tofile="${deploy.dir}/build.xml"/>
+        <copy todir="${deploy.dir}/lib">
+            <fileset dir="lib"/>
+        </copy>
+    </target>
+
+    <target name="clean">
+    </target>
+
+    <target name="all" depends="clean,deploy">
+    </target>
+
+</project>

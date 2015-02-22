@@ -1,0 +1,17 @@
+javaserver:
+    build: ./java/.
+    volumes:
+      - ./deploy/rpc:/protobuf-example/deploy/rpc
+    working_dir: /protobuf-example/deploy/rpc
+    ports:
+      - "9192:9192"
+    command: java -Dfile.encoding=UTF-8 -classpath mqtt.jar Server
+
+pythonclient:
+    build: ./python/.
+    volumes:
+      - ./pythonclient:/protobuf-example/pythonclient
+    working_dir: /protobuf-example/pythonclient
+    links:
+      - javaserver
+    command: python run_client.py

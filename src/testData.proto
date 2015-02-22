@@ -1,0 +1,25 @@
+package protobuftest; //this is protobuf namespace, not java's
+option java_package = "rpcdata";
+option java_outer_classname = "ConfigProtos";
+
+//configuration data to configure a video player 
+message ConfigReply
+{
+    optional string http_server_ip = 1; //server to connect to
+    optional string tc_ip = 2; //traffic controller ip address
+    optional string tc_if = 3; //interface name to configure traffic controller on
+    optional string binary_share_ip = 4;
+    enum PlayerType
+    {
+        BCM97208 = 0;
+        LINUX32 = 1;
+        ANDROID = 2;
+    }
+    optional PlayerType player_type = 5 [default = BCM97208];
+}
+
+message ConfigRequest
+{
+    optional string version = 1;
+}
+
